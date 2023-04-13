@@ -8,6 +8,8 @@
 import UIKit
 
 extension UIImageView {
+    static let baseImageUrl: String = "https://image.tmdb.org/t/p/w500"
+    
     @discardableResult
     func loadImage(from path: String,
                    placeholder: UIImage? = nil) ->
@@ -19,7 +21,7 @@ extension UIImageView {
             return nil
         }
 
-        let urlString = "https://image.tmdb.org/t/p/w500\(path)"
+        let urlString = UIImageView.baseImageUrl + path
         guard let url = URL(string: urlString) else {
             return nil
         }
