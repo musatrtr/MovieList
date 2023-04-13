@@ -41,33 +41,4 @@ struct NetworkManager: NetworkProtocol {
             }
             .eraseToAnyPublisher()
     }
-    
-    func download(from path: String) -> AnyPublisher<Data, APIError> {
-        guard let url = URL(string: "https://api.themoviedb.org/3/\(path)") else {
-            return Just(Data())
-                .setFailureType(to: APIError.self)
-                .eraseToAnyPublisher()
-        }
-        
-        let request = URLRequest(url: url)
-        
-        return URLSession.shared
-            .dataTaskPublisher(for: request)
-            .receive(on: DispatchQueue.main)
-            .tryMap({ output in
-                if let response = output.response as? HTTPURLResponse {
-                    switch response.statusCode {
-                    case 200...299:
-                        return output.data
-                    default:
-                        throw APIError.httpError(response.statusCode)
-                    }
-                }
-                throw APIError.unknown
-            })
-            .mapError { error in
-                return APIError.decodingError
-            }
-            .eraseToAnyPublisher()
-    }
 }
